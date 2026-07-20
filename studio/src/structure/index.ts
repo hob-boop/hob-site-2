@@ -1,5 +1,14 @@
 import type {StructureResolver} from 'sanity/structure'
-import {CogIcon, HomeIcon, SparklesIcon, BasketIcon, StarIcon, BookIcon} from '@sanity/icons'
+import {
+  CogIcon,
+  HomeIcon,
+  SparklesIcon,
+  BasketIcon,
+  StarIcon,
+  BookIcon,
+  UserIcon,
+  DocumentTextIcon,
+} from '@sanity/icons'
 
 /**
  * Documents that must only ever exist once. They're pinned to a fixed
@@ -48,6 +57,18 @@ export const structure: StructureResolver = (S) =>
             .defaultOrdering([{field: 'order', direction: 'asc'}]),
         ),
 
+      S.documentTypeListItem('barber')
+        .title('Barbers')
+        .icon(UserIcon)
+        .child(S.documentTypeList('barber').title('Barbers').defaultOrdering([{field: 'order', direction: 'asc'}])),
+
+      S.documentTypeListItem('guide')
+        .title('Guides')
+        .icon(DocumentTextIcon)
+        .child(
+          S.documentTypeList('guide').title('Guides').defaultOrdering([{field: 'publishedAt', direction: 'desc'}]),
+        ),
+
       S.divider(),
 
       ...S.documentTypeListItems().filter((listItem) => {
@@ -55,7 +76,7 @@ export const structure: StructureResolver = (S) =>
         return (
           id &&
           !SINGLETONS.includes(id) &&
-          !['service', 'product', 'review', 'mediaMention'].includes(id)
+          !['service', 'product', 'review', 'mediaMention', 'barber', 'guide'].includes(id)
         )
       }),
     ])

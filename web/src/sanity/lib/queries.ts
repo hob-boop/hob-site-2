@@ -127,3 +127,53 @@ export const WORK_PAGE_QUERY = defineQuery(/* groq */ `{
     galleryImages[]{_key, ${imageFragment}}
   }
 }`)
+
+const barberFragment = /* groq */ `
+  _id, name, "slug": slug.current, role, bio, photo{${imageFragment}}
+`
+
+export const BARBERS_PAGE_QUERY = defineQuery(/* groq */ `{
+  "settings": *[_id == "siteSettings"][0]{${settingsFragment}},
+  "barbers": *[_type == "barber"] | order(order asc){${barberFragment}}
+}`)
+
+export const BARBER_SLUGS_QUERY = defineQuery(/* groq */ `
+  *[_type == "barber" && defined(slug.current)]{"slug": slug.current}
+`)
+
+export const BARBER_PAGE_QUERY = defineQuery(/* groq */ `{
+  "settings": *[_id == "siteSettings"][0]{${settingsFragment}},
+  "barber": *[_type == "barber" && slug.current == $slug][0]{${barberFragment}}
+}`)
+
+const guideCardFragment = /* groq */ `
+  _id, title, "slug": slug.current, kicker, excerpt, publishedAt
+`
+
+export const GUIDES_PAGE_QUERY = defineQuery(/* groq */ `{
+  "settings": *[_id == "siteSettings"][0]{${settingsFragment}},
+  "guides": *[_type == "guide"] | order(publishedAt desc){${guideCardFragment}}
+}`)
+
+export const GUIDE_SLUGS_QUERY = defineQuery(/* groq */ `
+  *[_type == "guide" && defined(slug.current)]{"slug": slug.current}
+`)
+
+export const GUIDE_PAGE_QUERY = defineQuery(/* groq */ `{
+  "settings": *[_id == "siteSettings"][0]{${settingsFragment}},
+  "guide": *[_type == "guide" && slug.current == $slug][0]{
+    ${guideCardFragment},
+    body[]{
+      _key,
+      _type,
+      text
+    }
+  }
+}`)
+
+export const LOCATION_PAGE_QUERY = defineQuery(/* groq */ `{
+  "settings": *[_id == "siteSettings"][0]{${settingsFragment}},
+  "services": *[_type == "service"] | order(order asc){
+    _id, title, description, icon, priceType, price, enquireText, link
+  }
+}`)

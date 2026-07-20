@@ -56,6 +56,36 @@ export default async function ServicesPage() {
         </div>
       </section>
 
+      <section className="shop-sec">
+        <div className="wrap">
+          <div className="sec-head">
+            <div className="kicker">More from the menu</div>
+            <h2>Every Cut, Explained</h2>
+            <hr className="rule" />
+          </div>
+          <div className="grid g4">
+            {[
+              {href: '/services/skin-fade', label: 'Skin Fade'},
+              {href: '/services/beard-trim', label: 'Beard Trim'},
+              {href: '/services/style-cut', label: 'Style Cut'},
+              {href: '/services/combo-haircut-beard', label: 'Combo: Cut & Beard'},
+              {href: '/services/hot-towel-shave', label: 'Hot Towel Shave'},
+              {href: '/services/head-spa', label: 'Head Spa'},
+              {href: '/services/kids-haircut', label: 'Kids Haircut'},
+              {href: '/services/comb-over', label: 'Comb Over'},
+            ].map((item, i) => (
+              <Reveal key={item.href} delay={(i % 4) * 80}>
+                <a className="prod" href={item.href} style={{padding: 'var(--sp5)', display: 'block'}}>
+                  <h4 style={{fontSize: 17, fontWeight: 700, textTransform: 'uppercase', fontFamily: 'Oswald'}}>
+                    {item.label}
+                  </h4>
+                </a>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section>
         <div className="wrap">
           <div className="book">

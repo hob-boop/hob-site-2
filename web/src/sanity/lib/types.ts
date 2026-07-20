@@ -135,3 +135,50 @@ export type WorkPageData = {
     galleryImages: (SanityImage & {_key: string})[] | null
   } | null
 }
+
+export type Barber = {
+  _id: string
+  name: string | null
+  slug: string | null
+  role: string | null
+  bio: string | null
+  photo: SanityImage
+}
+
+export type BarbersPageData = {
+  settings: Settings
+  barbers: Barber[]
+}
+
+export type BarberPageData = {
+  settings: Settings
+  barber: Barber | null
+}
+
+export type GuideCard = {
+  _id: string
+  title: string | null
+  slug: string | null
+  kicker: string | null
+  excerpt: string | null
+  publishedAt: string | null
+}
+
+export type GuideBlock = {_key: string; _type: 'paragraph' | 'subheading'; text: string | null}
+
+export type Guide = GuideCard & {body: GuideBlock[] | null}
+
+export type GuidesPageData = {
+  settings: Settings
+  guides: GuideCard[]
+}
+
+export type GuidePageData = {
+  settings: Settings
+  guide: Guide | null
+}
+
+export type LocationPageData = {
+  settings: Settings
+  services: Service[]
+}
