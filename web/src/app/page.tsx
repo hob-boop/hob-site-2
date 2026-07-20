@@ -1,34 +1,20 @@
 import Image from 'next/image'
 import {client} from '@/sanity/lib/client'
 import {HOMEPAGE_QUERY} from '@/sanity/lib/queries'
-import type {HomepageData, ResolvedLink, SectionHeader} from '@/sanity/lib/types'
+import type {HomepageData, ResolvedLink} from '@/sanity/lib/types'
 import {cleanHref} from '@/sanity/lib/links'
-import {
-  LEGACY_LOGO,
-  LEGACY_HERO_SLIDES,
-  LEGACY_GALLERY,
-  LEGACY_PRODUCT_IMAGES,
-  asImage,
-} from '@/sanity/lib/legacyMedia'
+import {LEGACY_HERO_SLIDES, LEGACY_GALLERY, LEGACY_PRODUCT_IMAGES, asImage} from '@/sanity/lib/legacyMedia'
 import {Hero} from '@/components/Hero'
 import {WelcomeVideo} from '@/components/WelcomeVideo'
 import {WorkGallery} from '@/components/WorkGallery'
-import {CartIcon, ServiceIcon} from '@/components/icons'
+import {ServiceIcon} from '@/components/icons'
+import {SiteHeader} from '@/components/SiteHeader'
+import {SiteFooter} from '@/components/SiteFooter'
+import {SectionHead} from '@/components/SectionHead'
+import {ServicePrice} from '@/components/ServicePrice'
+import {Reveal} from '@/components/Reveal'
 
 export const revalidate = 60
-
-/** Section header block: kicker, heading, gold rule, optional intro. */
-function SectionHead({header}: {header: SectionHeader}) {
-  if (!header) return null
-  return (
-    <div className="sec-head">
-      {header.kicker ? <div className="kicker">{header.kicker}</div> : null}
-      {header.heading ? <h2>{header.heading}</h2> : null}
-      <hr className="rule" />
-      {header.intro ? <p>{header.intro}</p> : null}
-    </div>
-  )
-}
 
 /** Renders a resolved link, or nothing if it has no destination. */
 function Btn({link, className}: {link: ResolvedLink; className: string}) {
@@ -42,15 +28,6 @@ function Btn({link, className}: {link: ResolvedLink; className: string}) {
       {link.label}
     </a>
   )
-}
-
-/** Formats a service price the way the original design did. */
-function servicePrice(s: HomepageData['services'][number]) {
-  if (s.priceType === 'enquire') {
-    return <small>{s.enquireText ?? 'enquire in-shop'}</small>
-  }
-  const prefix = s.priceType === 'from' ? 'from ' : ''
-  return `${prefix}$${s.price ?? 0}`
 }
 
 /** Splits the reviews footnote on **bold** so the gold emphasis is editable. */
@@ -87,8 +64,6 @@ export default async function HomePage() {
   const sanitySlides = (home.heroSlides ?? []).map((s) => s?.url).filter((u): u is string => Boolean(u))
   const slideUrls = sanitySlides.length ? sanitySlides : LEGACY_HERO_SLIDES
 
-  const logoUrl = settings.logo?.url ?? LEGACY_LOGO
-
   const sanityGallery = (home.galleryImages ?? []).filter((g) => g?.url)
   const galleryImages = sanityGallery.length
     ? sanityGallery
@@ -96,61 +71,7 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* ===== NAV ===== */}
-      <nav className="bar">
-        <div className="wrap">
-          <a className="brand" href="#top">
-            <span className="emblem">
-              {logoUrl ? (
-                <Image
-                  src={logoUrl}
-                  alt={settings.logo?.alt ?? settings.brandName ?? 'Logo'}
-                  width={52}
-                  height={52}
-                  style={{height: '88%', width: '88%', objectFit: 'contain'}}
-                  priority
-                />
-              ) : null}
-            </span>
-            <span className="wm">
-              {settings.brandName}
-              {settings.brandTagline ? <small>{settings.brandTagline}</small> : null}
-            </span>
-          </a>
-
-          <div className="links">
-            {settings.navLinks?.map((l) =>
-              l?.href ? (
-                <a
-                  key={l._key}
-                  href={cleanHref(l.href)}
-                  {...(l.newTab ? {target: '_blank', rel: 'noopener noreferrer'} : {})}
-                >
-                  {l.label}
-                </a>
-              ) : null,
-            )}
-          </div>
-
-          <div className="nav-actions">
-            {settings.cartUrl ? (
-              <a className="cart" href={settings.cartUrl} aria-label="Cart">
-                <CartIcon />
-              </a>
-            ) : null}
-            {settings.bookingUrl ? (
-              <a
-                className="btn btn-primary"
-                href={settings.bookingUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {settings.bookingLabel ?? 'Book Now'}
-              </a>
-            ) : null}
-          </div>
-        </div>
-      </nav>
+      <SiteHeader settings={settings} activeHref="/" />
 
       {/* ===== HERO ===== */}
       <Hero home={home} settings={settings} slideUrls={slideUrls} />
@@ -192,15 +113,19 @@ export default async function HomePage() {
         <div className="wrap">
           <SectionHead header={home.servicesHeader} />
           <div className="grid g4">
-            {services.map((s) => (
-              <a className="svc" key={s._id} href={s.link ?? settings.bookingUrl ?? '#'}>
-                <div className="ic">
-                  <ServiceIcon name={s.icon} />
-                </div>
-                <h3>{s.title}</h3>
-                <p>{s.description}</p>
-                <div className="pr">{servicePrice(s)}</div>
-              </a>
+            {services.map((s, i) => (
+              <Reveal key={s._id} delay={(i % 4) * 80}>
+                <a className="svc" href={s.link ?? settings.bookingUrl ?? '#'}>
+                  <div className="ic">
+                    <ServiceIcon name={s.icon} />
+                  </div>
+                  <h3>{s.title}</h3>
+                  <p>{s.description}</p>
+                  <div className="pr">
+                    <ServicePrice service={s} />
+                  </div>
+                </a>
+              </Reveal>
             ))}
           </div>
           <div style={{textAlign: 'center', marginTop: 'var(--sp7)'}}>
@@ -214,27 +139,29 @@ export default async function HomePage() {
         <div className="wrap">
           <SectionHead header={home.shopHeader} />
           <div className="grid g4">
-            {products.map((p) => (
-              <a className="prod" key={p._id} href={p.url ?? '#'}>
-                <div className="ph">
-                  {(p.image?.url ?? LEGACY_PRODUCT_IMAGES[p.url ?? '']) ? (
-                    <Image
-                      src={p.image?.url ?? LEGACY_PRODUCT_IMAGES[p.url ?? '']}
-                      alt={p.image?.alt ?? p.title ?? ''}
-                      width={400}
-                      height={400}
-                      sizes="(max-width: 560px) 100vw, (max-width: 980px) 50vw, 25vw"
-                      placeholder={p.image?.lqip ? 'blur' : 'empty'}
-                      blurDataURL={p.image?.lqip ?? undefined}
-                      style={{width: '100%', height: '100%', objectFit: 'cover'}}
-                    />
-                  ) : null}
-                </div>
-                <div className="b">
-                  <h4>{p.title}</h4>
-                  <div className="pr">${p.price}</div>
-                </div>
-              </a>
+            {products.map((p, i) => (
+              <Reveal key={p._id} delay={(i % 4) * 80}>
+                <a className="prod" href={p.url ?? '#'}>
+                  <div className="ph">
+                    {(p.image?.url ?? LEGACY_PRODUCT_IMAGES[p.url ?? '']) ? (
+                      <Image
+                        src={p.image?.url ?? LEGACY_PRODUCT_IMAGES[p.url ?? '']}
+                        alt={p.image?.alt ?? p.title ?? ''}
+                        width={400}
+                        height={400}
+                        sizes="(max-width: 560px) 100vw, (max-width: 980px) 50vw, 25vw"
+                        placeholder={p.image?.lqip ? 'blur' : 'empty'}
+                        blurDataURL={p.image?.lqip ?? undefined}
+                        style={{width: '100%', height: '100%', objectFit: 'cover'}}
+                      />
+                    ) : null}
+                  </div>
+                  <div className="b">
+                    <h4>{p.title}</h4>
+                    <div className="pr">${p.price}</div>
+                  </div>
+                </a>
+              </Reveal>
             ))}
           </div>
           <div style={{textAlign: 'center', marginTop: 'var(--sp7)'}}>
@@ -335,68 +262,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ===== FOOTER ===== */}
-      <footer id="location">
-        <div className="wrap">
-          <div className="f-top">
-            <div className="f-brand">
-              <div className="emblem">
-                {logoUrl ? (
-                  <Image
-                    src={logoUrl}
-                    alt={settings.logo?.alt ?? settings.brandName ?? 'Logo'}
-                    width={70}
-                    height={70}
-                    style={{height: '86%', width: '86%', objectFit: 'contain'}}
-                  />
-                ) : null}
-              </div>
-              {settings.footerBlurb ? <p>{settings.footerBlurb}</p> : null}
-            </div>
-
-            <div className="f-col">
-              <h4>{settings.footerVisitHeading ?? 'VISIT'}</h4>
-              {settings.footerVisitLinks?.map((l) =>
-                l?.href ? (
-                  <a
-                    key={l._key}
-                    href={cleanHref(l.href)}
-                    {...(l.newTab ? {target: '_blank', rel: 'noopener noreferrer'} : {})}
-                  >
-                    {l.label}
-                  </a>
-                ) : null,
-              )}
-            </div>
-
-            <div className="f-col">
-              <h4>{settings.footerHoursHeading ?? 'HOURS'}</h4>
-              {settings.openingHours?.map((row) => (
-                <span key={row._key}>
-                  {row.days} · {row.hours}
-                </span>
-              ))}
-            </div>
-
-            <div className="f-col">
-              <h4>{settings.footerConnectHeading ?? 'CONNECT'}</h4>
-              {settings.footerConnectLinks?.map((l) =>
-                l?.href ? (
-                  <a
-                    key={l._key}
-                    href={cleanHref(l.href)}
-                    {...(l.newTab ? {target: '_blank', rel: 'noopener noreferrer'} : {})}
-                  >
-                    {l.label}
-                  </a>
-                ) : null,
-              )}
-            </div>
-          </div>
-
-          {settings.legalLine ? <div className="legal">{settings.legalLine}</div> : null}
-        </div>
-      </footer>
+      <SiteFooter settings={settings} />
     </>
   )
 }

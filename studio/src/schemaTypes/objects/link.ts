@@ -26,6 +26,7 @@ export const link = defineType({
         list: [
           {title: 'Web address', value: 'external'},
           {title: 'Section on this page', value: 'anchor'},
+          {title: 'Page on this site', value: 'page'},
           {title: 'Phone number', value: 'phone'},
           {title: 'Email address', value: 'email'},
         ],
@@ -63,6 +64,26 @@ export const link = defineType({
       hidden: ({parent}) => parent?.kind !== 'anchor',
     }),
     defineField({
+      name: 'internalPage',
+      title: 'Page',
+      description: 'Links to one of the standalone pages built out on the new site.',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Services', value: 'services'},
+          {title: 'Shop', value: 'shop'},
+          {title: 'Our Work', value: 'work'},
+        ],
+      },
+      hidden: ({parent}) => parent?.kind !== 'page',
+      validation: (rule) =>
+        rule.custom((value, context) => {
+          const parent = context.parent as {kind?: string} | undefined
+          if (parent?.kind === 'page' && !value) return 'Choose a page'
+          return true
+        }),
+    }),
+    defineField({
       name: 'phone',
       title: 'Phone number',
       description: 'As you want it shown, e.g. 03 390 0106.',
@@ -85,10 +106,26 @@ export const link = defineType({
     }),
   ],
   preview: {
-    select: {title: 'label', kind: 'kind', url: 'url', anchor: 'anchor', phone: 'phone', email: 'email'},
-    prepare({title, kind, url, anchor, phone, email}) {
+    select: {
+      title: 'label',
+      kind: 'kind',
+      url: 'url',
+      anchor: 'anchor',
+      internalPage: 'internalPage',
+      phone: 'phone',
+      email: 'email',
+    },
+    prepare({title, kind, url, anchor, internalPage, phone, email}) {
       const target =
-        kind === 'anchor' ? `#${anchor ?? ''}` : kind === 'phone' ? phone : kind === 'email' ? email : url
+        kind === 'anchor'
+          ? `#${anchor ?? ''}`
+          : kind === 'page'
+            ? `/${internalPage ?? ''}`
+            : kind === 'phone'
+              ? phone
+              : kind === 'email'
+                ? email
+                : url
       return {title: title || 'Untitled link', subtitle: target || 'No destination set'}
     },
   },

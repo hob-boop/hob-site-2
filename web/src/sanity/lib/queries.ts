@@ -15,35 +15,39 @@ const linkFragment = /* groq */ `
   label,
   newTab,
   "href": select(
-    kind == "anchor" => "#" + anchor,
+    kind == "anchor" => "/#" + anchor,
+    kind == "page"   => "/" + internalPage,
     kind == "phone"  => "tel:" + phone,
     kind == "email"  => "mailto:" + email,
     url
   )
 `
 
+/** Every field the header and footer need, on every page. */
+const settingsFragment = /* groq */ `
+  brandName,
+  brandTagline,
+  logo{${imageFragment}},
+  navLinks[]{_key, ${linkFragment}},
+  bookingUrl,
+  bookingLabel,
+  cartUrl,
+  phone,
+  email,
+  mapUrl,
+  openingHours[]{_key, days, hours},
+  socialLinks[]{_key, platform, url},
+  footerBlurb,
+  footerVisitHeading,
+  footerVisitLinks[]{_key, ${linkFragment}},
+  footerHoursHeading,
+  footerConnectHeading,
+  footerConnectLinks[]{_key, ${linkFragment}},
+  legalLine
+`
+
 export const HOMEPAGE_QUERY = defineQuery(/* groq */ `{
-  "settings": *[_id == "siteSettings"][0]{
-    brandName,
-    brandTagline,
-    logo{${imageFragment}},
-    navLinks[]{_key, ${linkFragment}},
-    bookingUrl,
-    bookingLabel,
-    cartUrl,
-    phone,
-    email,
-    mapUrl,
-    openingHours[]{_key, days, hours},
-    socialLinks[]{_key, platform, url},
-    footerBlurb,
-    footerVisitHeading,
-    footerVisitLinks[]{_key, ${linkFragment}},
-    footerHoursHeading,
-    footerConnectHeading,
-    footerConnectLinks[]{_key, ${linkFragment}},
-    legalLine
-  },
+  "settings": *[_id == "siteSettings"][0]{${settingsFragment}},
 
   "home": *[_id == "homePage"][0]{
     heroKicker,
@@ -101,3 +105,25 @@ export const SEO_QUERY = defineQuery(/* groq */ `
     "ogImage": ogImage.asset->url
   }
 `)
+
+export const SERVICES_PAGE_QUERY = defineQuery(/* groq */ `{
+  "settings": *[_id == "siteSettings"][0]{${settingsFragment}},
+  "services": *[_type == "service"] | order(order asc){
+    _id, title, description, icon, priceType, price, enquireText, link
+  }
+}`)
+
+export const SHOP_PAGE_QUERY = defineQuery(/* groq */ `{
+  "settings": *[_id == "siteSettings"][0]{${settingsFragment}},
+  "products": *[_type == "product"] | order(order asc){
+    _id, title, price, url, image{${imageFragment}}
+  }
+}`)
+
+export const WORK_PAGE_QUERY = defineQuery(/* groq */ `{
+  "settings": *[_id == "siteSettings"][0]{${settingsFragment}},
+  "home": *[_id == "homePage"][0]{
+    workHeader,
+    galleryImages[]{_key, ${imageFragment}}
+  }
+}`)

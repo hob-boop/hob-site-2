@@ -117,3 +117,21 @@ export type HomepageData = {
   reviews: Review[]
   mediaMentions: MediaMention[]
 }
+
+export type ServicesPageData = {
+  settings: Settings
+  services: Service[]
+}
+
+export type ShopPageData = {
+  settings: Settings
+  products: Product[]
+}
+
+export type WorkPageData = {
+  settings: Settings
+  home: {
+    workHeader: SectionHeader
+    galleryImages: (SanityImage & {_key: string})[] | null
+  } | null
+}

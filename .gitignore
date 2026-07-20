@@ -9,3 +9,4 @@ dist/
 out/
 build/
 *.log
+*.tsbuildinfo
