@@ -10,7 +10,11 @@ import {GalleryGrid} from '@/components/GalleryGrid'
 
 export const revalidate = 60
 
-export const metadata: Metadata = {title: 'Our Work — House of Barber'}
+export const metadata: Metadata = {
+  title: 'Best Barbershop Christchurch | Our Work',
+  description:
+    "See why House of Barber is rated Christchurch's best barbershop. Browse real cuts, fades and beard work from our chairs.",
+}
 
 export default async function WorkPage() {
   const data: WorkPageData = await client.fetch(WORK_PAGE_QUERY)
@@ -28,9 +32,9 @@ export default async function WorkPage() {
       <SiteHeader settings={settings} activeHref="/work" />
 
       <PageHero
-        kicker="The proof"
+        kicker="Christchurch's best barbershop"
         heading="Our Work"
-        subtitle="Fresh cuts from the chair — click a photo for a closer look."
+        subtitle="Fresh cuts from the chair — top rated in Christchurch, click a photo for a closer look."
         crumb="Our Work"
       />
 

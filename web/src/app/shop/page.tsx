@@ -11,7 +11,11 @@ import {Reveal} from '@/components/Reveal'
 
 export const revalidate = 60
 
-export const metadata: Metadata = {title: 'Shop — House of Barber'}
+export const metadata: Metadata = {
+  title: "Men's Grooming Products NZ | House of Barber",
+  description:
+    'Shop the beard oils, clays and styling products we use in the chair. NZ-wide shipping, Christchurch pickup available.',
+}
 
 export default async function ShopPage() {
   const data: ShopPageData = await client.fetch(SHOP_PAGE_QUERY)
@@ -25,9 +29,9 @@ export default async function ShopPage() {
       <SiteHeader settings={settings} activeHref="/shop" />
 
       <PageHero
-        kicker="Take it home"
+        kicker="Men's grooming products, NZ-wide"
         heading="Shop"
-        subtitle="The oils, clays and sprays we actually use in the chair."
+        subtitle="The beard oils, clays and styling products we actually use in the chair."
         crumb="Shop"
       />
 

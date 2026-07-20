@@ -11,7 +11,11 @@ import {ServicePrice} from '@/components/ServicePrice'
 
 export const revalidate = 60
 
-export const metadata: Metadata = {title: 'Services — House of Barber'}
+export const metadata: Metadata = {
+  title: "Men's Hair Salon Christchurch | Services",
+  description:
+    "Full men's haircut menu in Christchurch: style cuts, skin fades, beard trims & more. Walk-ins welcome, easy online booking.",
+}
 
 export default async function ServicesPage() {
   const data: ServicesPageData = await client.fetch(SERVICES_PAGE_QUERY)
@@ -25,9 +29,9 @@ export default async function ServicesPage() {
       <SiteHeader settings={settings} activeHref="/services" />
 
       <PageHero
-        kicker="What we do"
+        kicker="Men's hair salon, Christchurch"
         heading="Services"
-        subtitle="Every cut, shave and treatment on the menu — pick one and book straight in."
+        subtitle="Every men's haircut, shave and treatment on the menu — walk in or book straight in."
         crumb="Services"
       />
 
