@@ -1,5 +1,7 @@
 import type {Metadata} from 'next'
 import type {ReactNode} from 'react'
+import {Analytics} from '@vercel/analytics/next'
+import {SpeedInsights} from '@vercel/speed-insights/next'
 import './globals.css'
 import {client} from '@/sanity/lib/client'
 import {SEO_QUERY} from '@/sanity/lib/queries'
@@ -46,7 +48,11 @@ export default function RootLayout({children}: {children: ReactNode}) {
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+        <SpeedInsights />
+      </body>
     </html>
   )
 }
