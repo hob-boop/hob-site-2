@@ -40,7 +40,7 @@ export default async function ShopPage() {
           <div className="grid g4">
             {products.map((p, i) => (
               <Reveal key={p._id} delay={(i % 4) * 80}>
-                <a className="prod" href={p.url ?? '#'}>
+                <a className="prod" href={p.slug ? `/shop/${p.slug}` : '/shop'}>
                   <div className="ph">
                     {(p.image?.url ?? LEGACY_PRODUCT_IMAGES[p.url ?? '']) ? (
                       <Image

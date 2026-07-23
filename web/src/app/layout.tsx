@@ -4,7 +4,9 @@ import {Analytics} from '@vercel/analytics/next'
 import {SpeedInsights} from '@vercel/speed-insights/next'
 import './globals.css'
 import {client} from '@/sanity/lib/client'
-import {SEO_QUERY} from '@/sanity/lib/queries'
+import {SEO_QUERY, SOCIAL_LINKS_QUERY} from '@/sanity/lib/queries'
+import {FloatingSocial} from '@/components/FloatingSocial'
+import {CartProvider} from '@/components/CartProvider'
 
 export const revalidate = 60
 
@@ -37,7 +39,15 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function RootLayout({children}: {children: ReactNode}) {
+export default async function RootLayout({children}: {children: ReactNode}) {
+  let socialLinks: {_key: string; platform: string; url: string}[] = []
+  try {
+    const data = await client.fetch(SOCIAL_LINKS_QUERY)
+    socialLinks = data?.socialLinks ?? []
+  } catch (error) {
+    console.error('[sanity] Could not load social links:', error)
+  }
+
   return (
     <html lang="en">
       <head>
@@ -49,7 +59,10 @@ export default function RootLayout({children}: {children: ReactNode}) {
         />
       </head>
       <body>
-        {children}
+        <CartProvider>
+          {children}
+          <FloatingSocial links={socialLinks} />
+        </CartProvider>
         <Analytics />
         <SpeedInsights />
       </body>

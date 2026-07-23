@@ -5,6 +5,7 @@ import type {HomepageData, ResolvedLink} from '@/sanity/lib/types'
 import {cleanHref} from '@/sanity/lib/links'
 import {LEGACY_HERO_SLIDES, LEGACY_GALLERY, LEGACY_PRODUCT_IMAGES, asImage} from '@/sanity/lib/legacyMedia'
 import {Hero} from '@/components/Hero'
+import {TrustStrip} from '@/components/TrustStrip'
 import {WelcomeVideo} from '@/components/WelcomeVideo'
 import {WorkGallery} from '@/components/WorkGallery'
 import {ServiceIcon} from '@/components/icons'
@@ -30,12 +31,37 @@ function Btn({link, className}: {link: ResolvedLink; className: string}) {
   )
 }
 
-/** Splits the reviews footnote on **bold** so the gold emphasis is editable. */
-function Footnote({text}: {text: string}) {
+/** Splits text on **bold** so the gold emphasis is editable. */
+function Bold({text}: {text: string}) {
   const parts = text.split(/\*\*(.+?)\*\*/g)
   return (
     <>
       {parts.map((part, i) => (i % 2 === 1 ? <b key={i}>{part}</b> : <span key={i}>{part}</span>))}
+    </>
+  )
+}
+
+/**
+ * Renders the reviews footnote, swapping "Rated X.X on Google" for the
+ * rating synced from Google each week (see /api/cron/update-google-rating)
+ * and linking it to the Google Business page. Falls back to the static copy
+ * from Sanity if the sync hasn't run yet.
+ */
+function Footnote({text, rating, mapUrl}: {text: string; rating: number | null; mapUrl: string | null}) {
+  const parts = text.split(/(Rated\s+[\d.]+\s+on\s+Google)/i)
+  return (
+    <>
+      {parts.map((part, i) => {
+        if (!/^Rated\s+[\d.]+\s+on\s+Google$/i.test(part)) return <Bold key={i} text={part} />
+        const label = rating != null ? part.replace(/[\d.]+/, rating.toFixed(1)) : part
+        return mapUrl ? (
+          <a key={i} className="rated-link" href={mapUrl} target="_blank" rel="noopener noreferrer">
+            {label}
+          </a>
+        ) : (
+          <span key={i}>{label}</span>
+        )
+      })}
     </>
   )
 }
@@ -74,18 +100,10 @@ export default async function HomePage() {
       <SiteHeader settings={settings} activeHref="/" />
 
       {/* ===== HERO ===== */}
-      <Hero home={home} settings={settings} slideUrls={slideUrls} />
+      <Hero home={home} slideUrls={slideUrls} />
 
       {/* ===== TRUST STRIP ===== */}
-      {home.trustItems?.length ? (
-        <div className="trust">
-          <div className="wrap">
-            {home.trustItems.map((item) => (
-              <span key={item}>{item}</span>
-            ))}
-          </div>
-        </div>
-      ) : null}
+      {home.trustItems?.length ? <TrustStrip items={home.trustItems} /> : null}
 
       {/* ===== WELCOME ===== */}
       <section className="welcome" id="welcome">
@@ -141,7 +159,7 @@ export default async function HomePage() {
           <div className="grid g4">
             {products.map((p, i) => (
               <Reveal key={p._id} delay={(i % 4) * 80}>
-                <a className="prod" href={p.url ?? '#'}>
+                <a className="prod" href={p.slug ? `/shop/${p.slug}` : '/shop'}>
                   <div className="ph">
                     {(p.image?.url ?? LEGACY_PRODUCT_IMAGES[p.url ?? '']) ? (
                       <Image
@@ -191,7 +209,7 @@ export default async function HomePage() {
           </div>
           {home.reviewsFootnote ? (
             <div className="reviews-foot">
-              <Footnote text={home.reviewsFootnote} />
+              <Footnote text={home.reviewsFootnote} rating={settings.googleRating} mapUrl={settings.mapUrl} />
             </div>
           ) : null}
         </div>
@@ -241,21 +259,28 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      {/* ===== BOOKING CTA ===== */}
-      <section>
+      {/* ===== FIND US ===== */}
+      <section id="location">
         <div className="wrap">
-          <div className="book">
-            {home.bookingKicker ? <div className="kicker">{home.bookingKicker}</div> : null}
-            {home.bookingHeading ? <h2>{home.bookingHeading}</h2> : null}
-            {home.bookingSubtitle ? <p>{home.bookingSubtitle}</p> : null}
-            {settings.bookingUrl ? (
-              <a
-                className="btn btn-primary"
-                href={settings.bookingUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {settings.bookingLabel ?? 'Book Now'}
+          <div className="sec-head">
+            {home.locationKicker ? <div className="kicker">{home.locationKicker}</div> : null}
+            {home.locationHeading ? <h2>{home.locationHeading}</h2> : null}
+            <hr className="rule" />
+            {home.locationSubtitle ? <p>{home.locationSubtitle}</p> : null}
+          </div>
+          <div className="map-frame">
+            <iframe
+              src="https://www.google.com/maps?q=House+Of+Barber,+Guthrey+Centre,+126+Cashel+Street,+Christchurch+Central+City,+Christchurch+8011&output=embed"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+              title="House of Barber location map"
+            />
+          </div>
+          <div style={{textAlign: 'center', marginTop: 'var(--sp7)'}}>
+            {settings.mapUrl ? (
+              <a className="btn btn-primary" href={settings.mapUrl} target="_blank" rel="noopener noreferrer">
+                Get Directions
               </a>
             ) : null}
           </div>

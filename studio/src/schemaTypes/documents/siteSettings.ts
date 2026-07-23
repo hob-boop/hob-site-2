@@ -78,8 +78,9 @@ export const siteSettings = defineType({
     }),
     defineField({
       name: 'cartUrl',
-      title: 'Cart / shop page',
-      description: 'Where the cart icon in the header sends people.',
+      title: 'Legacy cart link (unused)',
+      description:
+        'Left over from the old site. The cart icon now always opens the built-in /cart page — this field is no longer used.',
       type: 'url',
       group: 'booking',
       validation: (rule) => rule.uri({scheme: ['http', 'https']}),
@@ -105,6 +106,31 @@ export const siteSettings = defineType({
       type: 'url',
       group: 'contact',
       validation: (rule) => rule.uri({scheme: ['http', 'https']}),
+    }),
+    defineField({
+      name: 'googleRating',
+      title: 'Google rating',
+      description:
+        'Pulled automatically from Google every Sunday night. You can edit it by hand and it will stick until the next scheduled run.',
+      type: 'number',
+      group: 'contact',
+      validation: (rule) => rule.min(0).max(5),
+    }),
+    defineField({
+      name: 'googleRatingCount',
+      title: 'Google review count',
+      description: 'Total number of Google reviews, updated alongside the rating.',
+      type: 'number',
+      group: 'contact',
+      validation: (rule) => rule.min(0).integer(),
+    }),
+    defineField({
+      name: 'googleRatingUpdatedAt',
+      title: 'Google rating last synced',
+      description: 'Set automatically by the weekly sync job — no need to edit this.',
+      type: 'datetime',
+      group: 'contact',
+      readOnly: true,
     }),
     defineField({
       name: 'openingHours',

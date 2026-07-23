@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/update-google-rating",
+      "schedule": "59 11 * * 0"
+    }
+  ]
+}

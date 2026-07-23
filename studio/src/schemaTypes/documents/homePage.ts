@@ -15,7 +15,7 @@ export const homePage = defineType({
     {name: 'reviews', title: 'Reviews'},
     {name: 'work', title: 'Our Work'},
     {name: 'media', title: 'In the Media'},
-    {name: 'booking', title: 'Booking CTA'},
+    {name: 'location', title: 'Find Us'},
   ],
 
   fields: [
@@ -232,24 +232,25 @@ export const homePage = defineType({
       group: 'media',
     }),
 
-    // ---------- Booking CTA ----------
+    // ---------- Find Us (map) ----------
     defineField({
-      name: 'bookingKicker',
+      name: 'locationKicker',
       title: 'Kicker',
       type: 'string',
-      group: 'booking',
+      group: 'location',
     }),
     defineField({
-      name: 'bookingHeading',
+      name: 'locationHeading',
       title: 'Heading',
       type: 'string',
-      group: 'booking',
+      group: 'location',
     }),
     defineField({
-      name: 'bookingSubtitle',
-      title: 'Subtitle',
+      name: 'locationSubtitle',
+      title: 'Address line',
+      description: 'Shown under the heading, above the map.',
       type: 'string',
-      group: 'booking',
+      group: 'location',
     }),
   ],
 

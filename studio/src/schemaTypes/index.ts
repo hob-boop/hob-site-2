@@ -11,6 +11,7 @@ import {review} from './documents/review'
 import {mediaMention} from './documents/mediaMention'
 import {barber} from './documents/barber'
 import {guide} from './documents/guide'
+import {reservation} from './documents/reservation'
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   // Objects
@@ -26,4 +27,5 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   mediaMention,
   barber,
   guide,
+  reservation,
 ]

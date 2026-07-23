@@ -6,6 +6,7 @@ import type {Settings} from '@/sanity/lib/types'
 import {cleanHref} from '@/sanity/lib/links'
 import {LEGACY_LOGO} from '@/sanity/lib/legacyMedia'
 import {CartIcon} from './icons'
+import {useCart} from './CartProvider'
 
 type Props = {
   settings: NonNullable<Settings>
@@ -17,6 +18,7 @@ export function SiteHeader({settings, activeHref}: Props) {
   const logoUrl = settings.logo?.url ?? LEGACY_LOGO
   const [open, setOpen] = useState(false)
   const close = () => setOpen(false)
+  const {count} = useCart()
 
   // Close on Escape, lock background scroll while open, and auto-close if the
   // viewport grows past the breakpoint where the burger disappears.
@@ -67,8 +69,8 @@ export function SiteHeader({settings, activeHref}: Props) {
                 <Image
                   src={logoUrl}
                   alt={settings.logo?.alt ?? settings.brandName ?? 'Logo'}
-                  width={52}
-                  height={52}
+                  width={40}
+                  height={40}
                   style={{height: '88%', width: '88%', objectFit: 'contain'}}
                   priority
                 />
@@ -98,11 +100,10 @@ export function SiteHeader({settings, activeHref}: Props) {
         </div>
 
         <div className="nav-actions">
-          {settings.cartUrl ? (
-            <a className="cart" href={settings.cartUrl} aria-label="Cart">
-              <CartIcon />
-            </a>
-          ) : null}
+          <a className="cart" href="/cart" aria-label={`Cart${count ? `, ${count} items` : ''}`}>
+            <CartIcon />
+            {count > 0 ? <span className="cart-badge">{count}</span> : null}
+          </a>
           {settings.bookingUrl ? (
             <a
               className="btn btn-primary"

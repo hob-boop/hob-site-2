@@ -1,16 +1,14 @@
 'use client'
 
 import {useCallback, useEffect, useRef, useState} from 'react'
-import {SocialIcon} from './icons'
-import type {Home, Settings} from '@/sanity/lib/types'
+import type {Home} from '@/sanity/lib/types'
 
 type HeroProps = {
   home: NonNullable<Home>
-  settings: NonNullable<Settings>
   slideUrls: string[]
 }
 
-export function Hero({home, settings, slideUrls}: HeroProps) {
+export function Hero({home, slideUrls}: HeroProps) {
   const [index, setIndex] = useState(0)
   const count = slideUrls.length
   const intervalMs = Math.round((home.heroSlideSeconds ?? 4.5) * 1000)
@@ -90,21 +88,6 @@ export function Hero({home, settings, slideUrls}: HeroProps) {
             &#8250;
           </button>
         </>
-      ) : null}
-
-      {settings.socialLinks?.length ? (
-        <div className="social">
-          {settings.socialLinks.map((s) => (
-            <a
-              key={s._key}
-              href={s.platform === 'phone' ? `tel:${s.url.replace(/\s/g, '')}` : s.url}
-              aria-label={s.platform}
-              {...(s.platform === 'phone' ? {} : {target: '_blank', rel: 'noopener noreferrer'})}
-            >
-              <SocialIcon platform={s.platform} />
-            </a>
-          ))}
-        </div>
       ) : null}
 
       {count > 1 ? (

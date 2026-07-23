@@ -8,6 +8,7 @@ import {
   BookIcon,
   UserIcon,
   DocumentTextIcon,
+  InboxIcon,
 } from '@sanity/icons'
 
 /**
@@ -71,12 +72,23 @@ export const structure: StructureResolver = (S) =>
 
       S.divider(),
 
+      S.documentTypeListItem('reservation')
+        .title('Shop Reservations')
+        .icon(InboxIcon)
+        .child(
+          S.documentTypeList('reservation')
+            .title('Shop Reservations')
+            .defaultOrdering([{field: 'createdAt', direction: 'desc'}]),
+        ),
+
+      S.divider(),
+
       ...S.documentTypeListItems().filter((listItem) => {
         const id = listItem.getId()
         return (
           id &&
           !SINGLETONS.includes(id) &&
-          !['service', 'product', 'review', 'mediaMention', 'barber', 'guide'].includes(id)
+          !['service', 'product', 'review', 'mediaMention', 'barber', 'guide', 'reservation'].includes(id)
         )
       }),
     ])

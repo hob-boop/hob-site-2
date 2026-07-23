@@ -30,6 +30,8 @@ export type Settings = {
   phone: string | null
   email: string | null
   mapUrl: string | null
+  googleRating: number | null
+  googleRatingCount: number | null
   openingHours: {_key: string; days: string; hours: string}[] | null
   socialLinks: {_key: string; platform: string; url: string}[] | null
   footerBlurb: string | null
@@ -67,9 +69,9 @@ export type Home = {
   workButton: ResolvedLink
   mediaHeader: SectionHeader
   mediaTagline: string | null
-  bookingKicker: string | null
-  bookingHeading: string | null
-  bookingSubtitle: string | null
+  locationKicker: string | null
+  locationHeading: string | null
+  locationSubtitle: string | null
 } | null
 
 export type Service = {
@@ -86,7 +88,10 @@ export type Service = {
 export type Product = {
   _id: string
   title: string | null
+  slug: string | null
+  description: string | null
   price: number | null
+  /** Legacy external link, kept only to key the temporary image fallback. Not used for navigation. */
   url: string | null
   image: SanityImage
 }
@@ -126,6 +131,11 @@ export type ServicesPageData = {
 export type ShopPageData = {
   settings: Settings
   products: Product[]
+}
+
+export type ProductPageData = {
+  settings: Settings
+  product: Product | null
 }
 
 export type WorkPageData = {

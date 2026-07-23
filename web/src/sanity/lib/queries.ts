@@ -35,6 +35,8 @@ const settingsFragment = /* groq */ `
   phone,
   email,
   mapUrl,
+  googleRating,
+  googleRatingCount,
   openingHours[]{_key, days, hours},
   socialLinks[]{_key, platform, url},
   footerBlurb,
@@ -44,6 +46,10 @@ const settingsFragment = /* groq */ `
   footerConnectHeading,
   footerConnectLinks[]{_key, ${linkFragment}},
   legalLine
+`
+
+const productFragment = /* groq */ `
+  _id, title, "slug": slug.current, price, url, image{${imageFragment}}
 `
 
 export const HOMEPAGE_QUERY = defineQuery(/* groq */ `{
@@ -75,18 +81,16 @@ export const HOMEPAGE_QUERY = defineQuery(/* groq */ `{
     workButton{${linkFragment}},
     mediaHeader,
     mediaTagline,
-    bookingKicker,
-    bookingHeading,
-    bookingSubtitle
+    locationKicker,
+    locationHeading,
+    locationSubtitle
   },
 
   "services": *[_type == "service"] | order(order asc){
     _id, title, description, icon, priceType, price, enquireText, link
   },
 
-  "products": *[_type == "product" && featured == true] | order(order asc){
-    _id, title, price, url, image{${imageFragment}}
-  },
+  "products": *[_type == "product" && featured == true] | order(order asc){${productFragment}},
 
   "reviews": *[_type == "review" && featured == true] | order(order asc){
     _id, quote, author, source, rating
@@ -96,6 +100,16 @@ export const HOMEPAGE_QUERY = defineQuery(/* groq */ `{
     _id, badgeBig, badgeSmall, title, excerpt, linkLabel, url
   }
 }`)
+
+export const SETTINGS_QUERY = defineQuery(/* groq */ `
+  *[_id == "siteSettings"][0]{${settingsFragment}}
+`)
+
+export const SOCIAL_LINKS_QUERY = defineQuery(/* groq */ `
+  *[_id == "siteSettings"][0]{
+    socialLinks[]{_key, platform, url}
+  }
+`)
 
 export const SEO_QUERY = defineQuery(/* groq */ `
   *[_id == "siteSettings"][0]{
@@ -115,8 +129,18 @@ export const SERVICES_PAGE_QUERY = defineQuery(/* groq */ `{
 
 export const SHOP_PAGE_QUERY = defineQuery(/* groq */ `{
   "settings": *[_id == "siteSettings"][0]{${settingsFragment}},
-  "products": *[_type == "product"] | order(order asc){
-    _id, title, price, url, image{${imageFragment}}
+  "products": *[_type == "product"] | order(order asc){${productFragment}}
+}`)
+
+export const PRODUCT_SLUGS_QUERY = defineQuery(/* groq */ `
+  *[_type == "product" && defined(slug.current)]{"slug": slug.current}
+`)
+
+export const PRODUCT_PAGE_QUERY = defineQuery(/* groq */ `{
+  "settings": *[_id == "siteSettings"][0]{${settingsFragment}},
+  "product": *[_type == "product" && slug.current == $slug][0]{
+    ${productFragment},
+    description
   }
 }`)
 

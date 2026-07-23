@@ -31,6 +31,21 @@ export const product = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'slug',
+      title: 'Product page URL',
+      description: 'Generates the address of this product\'s page, e.g. /shop/jelly-beard-oil.',
+      type: 'slug',
+      options: {source: 'title', maxLength: 96},
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'description',
+      title: 'Description',
+      description: 'Shown on the product page. A couple of sentences is plenty.',
+      type: 'text',
+      rows: 4,
+    }),
+    defineField({
       name: 'price',
       title: 'Price',
       description: 'Numbers only — the dollar sign is added for you.',
@@ -39,10 +54,11 @@ export const product = defineType({
     }),
     defineField({
       name: 'url',
-      title: 'Product page',
-      description: 'The page on the shop where this product can be bought.',
+      title: 'Legacy external link (unused)',
+      description:
+        'Left over from the old site. Product pages are now built in on the shop itself — this field is no longer used for links and can be ignored.',
       type: 'url',
-      validation: (rule) => rule.required().uri({scheme: ['http', 'https']}),
+      validation: (rule) => rule.uri({scheme: ['http', 'https']}),
     }),
     defineField({
       name: 'featured',
