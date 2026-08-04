@@ -9,7 +9,7 @@ export const revalidate = 60
 export const metadata: Metadata = {
   title: 'Head Spa Christchurch | House of Barber',
   description:
-    'Head spa & scalp massage treatments in Christchurch. The full reset — book online at Halswell or Christchurch Central.',
+    'Head spa & scalp massage treatments in Christchurch. The full reset — book online today.',
 }
 
 export default async function HeadSpaPage() {

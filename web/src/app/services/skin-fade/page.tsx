@@ -9,7 +9,7 @@ export const revalidate = 60
 export const metadata: Metadata = {
   title: 'Skin Fade Christchurch | House of Barber',
   description:
-    'Sharp, clean skin fades in Christchurch from $55. Tailored to you by our barbers at Halswell or Christchurch Central. Book now.',
+    'Sharp, clean skin fades in Christchurch from $55. Tailored to you by our barbers at Christchurch Central. Book now.',
 }
 
 export default async function SkinFadePage() {

@@ -59,7 +59,7 @@ export default async function ChristchurchCentralPage() {
         <div className="wrap" style={{maxWidth: 720}}>
           <p style={{color: 'var(--slate)', fontSize: 17, marginBottom: 'var(--sp4)'}}>
             Our Christchurch Central shop sits at {ADDRESS} — easy to find if you're already in the CBD for
-            work, shopping or a coffee. Same barbers, same menu as Halswell, just closer to the city.
+            work, shopping or a coffee.
           </p>
           {settings.phone ? (
             <p style={{fontSize: 17, marginBottom: 'var(--sp4)'}}>

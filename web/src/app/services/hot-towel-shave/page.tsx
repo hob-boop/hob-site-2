@@ -9,7 +9,7 @@ export const revalidate = 60
 export const metadata: Metadata = {
   title: 'Hot Towel Shave Christchurch | House of Barber',
   description:
-    'Traditional hot towel & straight razor shaves in Christchurch. Sit back and relax at Halswell or Christchurch Central.',
+    'Traditional hot towel & straight razor shaves in Christchurch. Sit back and relax at Christchurch Central.',
 }
 
 export default async function HotTowelShavePage() {

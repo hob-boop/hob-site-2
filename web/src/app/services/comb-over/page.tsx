@@ -9,7 +9,7 @@ export const revalidate = 60
 export const metadata: Metadata = {
   title: 'Comb Over Haircut Christchurch | House of Barber',
   description:
-    'Sharp comb over haircuts in Christchurch, tailored to your hair type. Book with our barbers at Halswell or the CBD.',
+    'Sharp comb over haircuts in Christchurch, tailored to your hair type. Book with our barbers in the CBD.',
 }
 
 export default async function CombOverPage() {

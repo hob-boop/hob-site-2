@@ -9,7 +9,7 @@ export const revalidate = 60
 export const metadata: Metadata = {
   title: 'Style Cut Christchurch | House of Barber',
   description:
-    'Scissor or clipper style cuts in Christchurch from $45, shaped to you. Book online at Halswell or Christchurch Central.',
+    'Scissor or clipper style cuts in Christchurch from $45, shaped to you. Book online at Christchurch Central.',
 }
 
 export default async function StyleCutPage() {

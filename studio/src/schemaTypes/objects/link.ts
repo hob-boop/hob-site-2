@@ -76,7 +76,6 @@ export const link = defineType({
           {title: 'Barbers', value: 'barbers'},
           {title: 'Guides', value: 'guides'},
           {title: 'Christchurch Central', value: 'locations/christchurch-central'},
-          {title: 'Halswell', value: 'locations/halswell'},
         ],
       },
       hidden: ({parent}) => parent?.kind !== 'page',

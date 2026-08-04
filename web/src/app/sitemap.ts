@@ -20,7 +20,6 @@ const STATIC_ROUTES = [
   '/barbers',
   '/guides',
   '/locations/christchurch-central',
-  '/locations/halswell',
 ]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
