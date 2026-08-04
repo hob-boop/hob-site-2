@@ -97,7 +97,7 @@ export const HOMEPAGE_QUERY = defineQuery(/* groq */ `{
   },
 
   "mediaMentions": *[_type == "mediaMention" && featured == true] | order(order asc){
-    _id, badgeBig, badgeSmall, title, excerpt, linkLabel, url
+    _id, badgeBig, badgeSmall, title, "slug": slug.current, excerpt, linkLabel, url
   }
 }`)
 
@@ -187,6 +187,22 @@ export const GUIDE_PAGE_QUERY = defineQuery(/* groq */ `{
   "settings": *[_id == "siteSettings"][0]{${settingsFragment}},
   "guide": *[_type == "guide" && slug.current == $slug][0]{
     ${guideCardFragment},
+    body[]{
+      _key,
+      _type,
+      text
+    }
+  }
+}`)
+
+export const MEDIA_SLUGS_QUERY = defineQuery(/* groq */ `
+  *[_type == "mediaMention" && defined(slug.current)]{"slug": slug.current}
+`)
+
+export const MEDIA_PAGE_QUERY = defineQuery(/* groq */ `{
+  "settings": *[_id == "siteSettings"][0]{${settingsFragment}},
+  "mention": *[_type == "mediaMention" && slug.current == $slug][0]{
+    _id, badgeBig, badgeSmall, title, excerpt,
     body[]{
       _key,
       _type,

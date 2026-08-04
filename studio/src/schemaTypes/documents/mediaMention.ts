@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import {defineArrayMember, defineField, defineType} from 'sanity'
 import {BookIcon} from '@sanity/icons'
 
 export const mediaMention = defineType({
@@ -28,10 +28,44 @@ export const mediaMention = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'slug',
+      title: 'Article page URL',
+      description:
+        'Generates the address of the full article on this site, e.g. /media/top-1-barbershop-christchurch. Leave the body empty and this off if the card should just show the excerpt with no full article.',
+      type: 'slug',
+      options: {source: 'title', maxLength: 96},
+    }),
+    defineField({
       name: 'excerpt',
       title: 'Summary',
+      description: 'Shown on the card, and as the article page\'s intro/search description.',
       type: 'text',
       rows: 4,
+    }),
+    defineField({
+      name: 'body',
+      title: 'Full article',
+      description: 'The full article, shown on this site\'s own page instead of linking out.',
+      type: 'array',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          name: 'paragraph',
+          title: 'Paragraph',
+          fields: [defineField({name: 'text', title: 'Text', type: 'text', rows: 4})],
+          preview: {select: {title: 'text'}},
+        }),
+        defineArrayMember({
+          type: 'object',
+          name: 'subheading',
+          title: 'Subheading',
+          fields: [defineField({name: 'text', title: 'Text', type: 'string'})],
+          preview: {
+            select: {title: 'text'},
+            prepare: ({title}) => ({title: `— ${title}`}),
+          },
+        }),
+      ],
     }),
     defineField({
       name: 'linkLabel',
@@ -41,7 +75,8 @@ export const mediaMention = defineType({
     }),
     defineField({
       name: 'url',
-      title: 'Link',
+      title: 'External link (only used if no article page above)',
+      description: 'Falls back to this if the article page URL above is empty.',
       type: 'url',
       validation: (rule) => rule.uri({scheme: ['http', 'https']}),
     }),

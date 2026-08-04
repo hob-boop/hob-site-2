@@ -109,9 +109,26 @@ export type MediaMention = {
   badgeBig: string | null
   badgeSmall: string | null
   title: string | null
+  slug: string | null
   excerpt: string | null
   linkLabel: string | null
   url: string | null
+}
+
+export type MediaBlock = {_key: string; _type: 'paragraph' | 'subheading'; text: string | null}
+
+export type MediaMentionArticle = {
+  _id: string
+  badgeBig: string | null
+  badgeSmall: string | null
+  title: string | null
+  excerpt: string | null
+  body: MediaBlock[] | null
+}
+
+export type MediaMentionPageData = {
+  settings: Settings
+  mention: MediaMentionArticle | null
 }
 
 export type HomepageData = {

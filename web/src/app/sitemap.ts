@@ -1,6 +1,6 @@
 import type {MetadataRoute} from 'next'
 import {client} from '@/sanity/lib/client'
-import {BARBER_SLUGS_QUERY, GUIDE_SLUGS_QUERY} from '@/sanity/lib/queries'
+import {BARBER_SLUGS_QUERY, GUIDE_SLUGS_QUERY, MEDIA_SLUGS_QUERY} from '@/sanity/lib/queries'
 
 const SITE_URL = 'https://houseofbarbernz.co.nz'
 
@@ -23,14 +23,16 @@ const STATIC_ROUTES = [
 ]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [barberSlugs, guideSlugs] = await Promise.all([
+  const [barberSlugs, guideSlugs, mediaSlugs] = await Promise.all([
     client.fetch<{slug: string}[]>(BARBER_SLUGS_QUERY),
     client.fetch<{slug: string}[]>(GUIDE_SLUGS_QUERY),
+    client.fetch<{slug: string}[]>(MEDIA_SLUGS_QUERY),
   ])
 
   const dynamicRoutes = [
     ...barberSlugs.map(({slug}) => `/barbers/${slug}`),
     ...guideSlugs.map(({slug}) => `/guides/${slug}`),
+    ...mediaSlugs.map(({slug}) => `/media/${slug}`),
   ]
 
   return [...STATIC_ROUTES, ...dynamicRoutes].map((path) => ({

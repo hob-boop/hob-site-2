@@ -247,8 +247,12 @@ export default async function HomePage() {
                 <div>
                   <h3>{m.title}</h3>
                   <p>{m.excerpt}</p>
-                  {m.url ? (
-                    <a className="read" href={m.url}>
+                  {m.slug ? (
+                    <a className="read" href={`/media/${m.slug}`}>
+                      {m.linkLabel ?? 'Read more \u2192'}
+                    </a>
+                  ) : m.url ? (
+                    <a className="read" href={m.url} target="_blank" rel="noopener noreferrer">
                       {m.linkLabel ?? 'Read more \u2192'}
                     </a>
                   ) : null}
