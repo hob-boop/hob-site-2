@@ -53,7 +53,6 @@ export default async function BarbersPage() {
                       </div>
                     ) : null}
                     <h3>{b.name}</h3>
-                    <p>{b.bio ?? b.role}</p>
                   </a>
                 </Reveal>
               ) : null,
