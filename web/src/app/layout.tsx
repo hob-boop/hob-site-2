@@ -4,8 +4,9 @@ import {Analytics} from '@vercel/analytics/next'
 import {SpeedInsights} from '@vercel/speed-insights/next'
 import './globals.css'
 import {client} from '@/sanity/lib/client'
-import {SEO_QUERY, SOCIAL_LINKS_QUERY} from '@/sanity/lib/queries'
+import {LOCAL_BUSINESS_QUERY, SEO_QUERY, SOCIAL_LINKS_QUERY} from '@/sanity/lib/queries'
 import {FloatingSocial} from '@/components/FloatingSocial'
+import {LocalBusinessJsonLd} from '@/components/LocalBusinessJsonLd'
 import {CartProvider} from '@/components/CartProvider'
 
 export const revalidate = 60
@@ -39,6 +40,13 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
+type LocalBusiness = {
+  googleRating: number | null
+  googleRatingCount: number | null
+  mapUrl: string | null
+  image: string | null
+} | null
+
 export default async function RootLayout({children}: {children: ReactNode}) {
   let socialLinks: {_key: string; platform: string; url: string}[] = []
   try {
@@ -46,6 +54,13 @@ export default async function RootLayout({children}: {children: ReactNode}) {
     socialLinks = data?.socialLinks ?? []
   } catch (error) {
     console.error('[sanity] Could not load social links:', error)
+  }
+
+  let localBusiness: LocalBusiness = null
+  try {
+    localBusiness = (await client.fetch(LOCAL_BUSINESS_QUERY)) as LocalBusiness
+  } catch (error) {
+    console.error('[sanity] Could not load local business data:', error)
   }
 
   return (
@@ -59,6 +74,12 @@ export default async function RootLayout({children}: {children: ReactNode}) {
         />
       </head>
       <body>
+        <LocalBusinessJsonLd
+          rating={localBusiness?.googleRating}
+          ratingCount={localBusiness?.googleRatingCount}
+          imageUrl={localBusiness?.image}
+          mapUrl={localBusiness?.mapUrl}
+        />
         <CartProvider>
           {children}
           <FloatingSocial links={socialLinks} />

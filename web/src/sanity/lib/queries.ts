@@ -120,6 +120,15 @@ export const SEO_QUERY = defineQuery(/* groq */ `
   }
 `)
 
+export const LOCAL_BUSINESS_QUERY = defineQuery(/* groq */ `
+  *[_id == "siteSettings"][0]{
+    googleRating,
+    googleRatingCount,
+    mapUrl,
+    "image": coalesce(ogImage.asset->url, logo.asset->url)
+  }
+`)
+
 export const SERVICES_PAGE_QUERY = defineQuery(/* groq */ `{
   "settings": *[_id == "siteSettings"][0]{${settingsFragment}},
   "services": *[_type == "service"] | order(order asc){

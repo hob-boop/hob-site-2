@@ -2,6 +2,7 @@ import Image from 'next/image'
 import type {Settings} from '@/sanity/lib/types'
 import {cleanHref} from '@/sanity/lib/links'
 import {LEGACY_LOGO} from '@/sanity/lib/legacyMedia'
+import {BUSINESS} from '@/lib/businessInfo'
 
 type Props = {
   settings: NonNullable<Settings>
@@ -27,6 +28,24 @@ export function SiteFooter({settings}: Props) {
               ) : null}
             </div>
             {settings.footerBlurb ? <p>{settings.footerBlurb}</p> : null}
+            <address
+              style={{
+                fontStyle: 'normal',
+                fontSize: 14,
+                lineHeight: 1.6,
+                marginTop: 'var(--sp4)',
+                color: 'var(--mist)',
+              }}
+            >
+              {BUSINESS.addressLines.map((line) => (
+                <span key={line} style={{display: 'block'}}>
+                  {line}
+                </span>
+              ))}
+              <a href={`tel:${BUSINESS.phoneE164}`} style={{color: 'inherit'}}>
+                {BUSINESS.phoneDisplay}
+              </a>
+            </address>
           </div>
 
           <div className="f-col">
