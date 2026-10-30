@@ -8,28 +8,19 @@ import {PageHero} from '@/components/PageHero'
 import {ServiceIcon} from '@/components/icons'
 import {ServicePrice} from '@/components/ServicePrice'
 import {Reveal} from '@/components/Reveal'
+import {BUSINESS} from '@/lib/businessInfo'
 
 export const revalidate = 60
 
 export const metadata: Metadata = {
-  title: 'Barber Christchurch Central | 126 Guthrey Lane',
+  title: 'Barber Christchurch Central | Guthrey Centre, Cashel St',
   description:
-    'House of Barber on Guthrey Lane, Christchurch Central. Skin fades, beard trims & hot towel shaves. Walk-ins welcome, book online.',
+    'House of Barber in the Guthrey Centre, 126 Cashel Street, Christchurch Central. Skin fades, beard trims & hot towel shaves. Walk-ins welcome.',
 }
 
-const ADDRESS = '126 Guthrey Lane, Christchurch Central'
-
-const localBusinessSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HairSalon',
-  name: 'House of Barber — Christchurch Central',
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: '126 Guthrey Lane',
-    addressLocality: 'Christchurch',
-    addressCountry: 'NZ',
-  },
-}
+// Address comes from the shared NAP record so it always matches the footer,
+// the site-wide LocalBusiness JSON-LD and the Google Business Profile.
+const ADDRESS = `${BUSINESS.address.streetAddress}, Christchurch Central`
 
 export default async function ChristchurchCentralPage() {
   const data: LocationPageData = await client.fetch(LOCATION_PAGE_QUERY)
@@ -40,17 +31,11 @@ export default async function ChristchurchCentralPage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{__html: JSON.stringify(localBusinessSchema)}}
-      />
-
       <SiteHeader settings={settings} activeHref="/locations/christchurch-central" />
 
       <PageHero
         kicker="Christchurch Central"
-        heading="Barber on Guthrey Lane"
+        heading="Barber in the Guthrey Centre"
         subtitle={`${ADDRESS} — in the heart of Christchurch City, walk-ins welcome.`}
         crumb="Christchurch Central"
       />
@@ -110,7 +95,7 @@ export default async function ChristchurchCentralPage() {
         <div className="wrap">
           <div className="book">
             <div className="kicker">Christchurch Central</div>
-            <h2>Book Guthrey Lane</h2>
+            <h2>Book Christchurch Central</h2>
             <p>Walk-ins welcome, or book ahead online.</p>
             {settings.bookingUrl ? (
               <a
