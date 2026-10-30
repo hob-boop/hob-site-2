@@ -1,8 +1,9 @@
 import type {MetadataRoute} from 'next'
 import {client} from '@/sanity/lib/client'
 import {BARBER_SLUGS_QUERY, GUIDE_SLUGS_QUERY, MEDIA_SLUGS_QUERY} from '@/sanity/lib/queries'
+import {BUSINESS} from '@/lib/businessInfo'
 
-const SITE_URL = 'https://houseofbarbernz.co.nz'
+const SITE_URL = BUSINESS.url
 
 const STATIC_ROUTES = [
   '',
@@ -35,8 +36,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...mediaSlugs.map(({slug}) => `/media/${slug}`),
   ]
 
+  // No lastModified: stamping every URL with "now" on each request tells
+  // Google nothing useful, so it's omitted until real edit dates are wired in.
   return [...STATIC_ROUTES, ...dynamicRoutes].map((path) => ({
     url: `${SITE_URL}${path}`,
-    lastModified: new Date(),
   }))
 }

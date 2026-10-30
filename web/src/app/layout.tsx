@@ -8,6 +8,7 @@ import {LOCAL_BUSINESS_QUERY, SEO_QUERY, SOCIAL_LINKS_QUERY} from '@/sanity/lib/
 import {FloatingSocial} from '@/components/FloatingSocial'
 import {LocalBusinessJsonLd} from '@/components/LocalBusinessJsonLd'
 import {CartProvider} from '@/components/CartProvider'
+import {BUSINESS} from '@/lib/businessInfo'
 
 export const revalidate = 60
 
@@ -29,11 +30,17 @@ export async function generateMetadata(): Promise<Metadata> {
   const title = seo?.seoTitle || seo?.brandName || 'House of Barber'
 
   return {
+    metadataBase: new URL(BUSINESS.url),
     title,
     description: seo?.seoDescription ?? undefined,
+    // og:title / og:description are deliberately NOT set here. Pages only
+    // override `title`/`description`, so a layout-level og:title would leak
+    // the homepage title onto every page's share preview. Without it,
+    // Facebook/Messenger/LinkedIn fall back to each page's own <title> and
+    // meta description.
     openGraph: {
-      title,
-      description: seo?.seoDescription ?? undefined,
+      siteName: BUSINESS.name,
+      locale: 'en_NZ',
       images: seo?.ogImage ? [seo.ogImage] : undefined,
       type: 'website',
     },
